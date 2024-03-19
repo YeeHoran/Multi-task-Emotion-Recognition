@@ -8,3 +8,8 @@ The entry is "mainpro_FER.py", and it includes data loading, training, public te
 The txt file is named as "data.txt", which save the running process sequencially corresponding to each epoch. For each epoch, the content includes the results for traing, public test, and private test as well. And the final chosen model and corresponding epoch are saved as the last several lines in the file.
 
 For the best trained models mentioned above, they are saved under "./FER2013_ResNet18RegressionTwoOutputs/" as 4 "***.t7" files, with each of them corresponding to best prediction modelsV, A, D, and Emotion category respectively. Please select the "**private**.t7" models. And then, these 4 models could be applied for VAD and category emotion recognition in applications.
+
+
+# Updated on March 19
+
+visualize.py now can predict emotion category, VAD information together.
