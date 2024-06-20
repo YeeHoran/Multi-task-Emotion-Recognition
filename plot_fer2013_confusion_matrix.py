@@ -14,6 +14,7 @@ import os
 import argparse
 from fer import FER2013
 
+
 from torch.autograd import Variable
 import torchvision
 import transforms as transforms
@@ -21,10 +22,11 @@ from sklearn.metrics import confusion_matrix
 from models import *
 
 
+
 parser = argparse.ArgumentParser(description='PyTorch Fer2013 CNN Training')
-parser.add_argument('--model', type=str, default='VGG19', help='CNN architecture')
+parser.add_argument('--model', type=str, default='ResNet18', help='CNN architecture')
 parser.add_argument('--dataset', type=str, default='FER2013', help='CNN architecture')
-parser.add_argument('--split', type=str, default='PrivateTest', help='split')
+parser.add_argument('--split', type=str, default='PublicTest', help='split')
 opt = parser.parse_args()
 
 cut_size = 44
@@ -75,8 +77,9 @@ class_names = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral'
 # Model
 if opt.model == 'VGG19':
     net = VGG('VGG19')
-elif opt.model  == 'Resnet18':
+elif opt.model == 'ResNet18':
     net = ResNet18()
+
 
 '''#add by HY
 net=ResNet18()
@@ -84,7 +87,11 @@ print(net)
 #add by HY'''
 
 path = os.path.join(opt.dataset + '_' + opt.model)
-checkpoint = torch.load(os.path.join(path, opt.split + '_model.t7'))
+split=opt.split
+# checkpoint = torch.load(os.path.join(path, opt.split + '_model.t7'))
+modelPath=os.path.join(path, split + '_model_classify.t7')
+# checkpoint = torch.load(os.path.join(path, split + '_model_private.t7'))
+checkpoint = torch.load(modelPath)
 
 net.load_state_dict(checkpoint['net'])
 net.cuda()
@@ -92,7 +99,7 @@ net.eval()
 Testset = FER2013(split = opt.split, transform=transform_test)
 #modified by HY
 #Testloader = torch.utils.data.DataLoader(Testset, batch_size=128, shuffle=False, num_workers=1)
-Testloader = torch.utils.data.DataLoader(Testset, batch_size=8, shuffle=False, num_workers=1)
+Testloader = torch.utils.data.DataLoader(Testset, batch_size=16, shuffle=False, num_workers=1)
 #modified by HY
 correct = 0
 total = 0

@@ -1,0 +1,21 @@
+,TrainLossV,PubtestLossV,PritestLossV
+0,"tensor(0.0014, device='cuda:0', grad_fn=<DivBackward0>)",0.11055630143222187,0.11033179610967636
+1,"tensor(0.0013, device='cuda:0', grad_fn=<DivBackward0>)",0.10832399148135904,0.10472629964351654
+2,"tensor(0.0013, device='cuda:0', grad_fn=<DivBackward0>)",0.10823969335800494,0.10456058382987976
+3,"tensor(0.0013, device='cuda:0', grad_fn=<DivBackward0>)",0.1081362011606031,0.10435934364795685
+4,"tensor(0.0014, device='cuda:0', grad_fn=<DivBackward0>)",0.1079745313755215,0.10401042550802231
+5,"tensor(0.0014, device='cuda:0', grad_fn=<DivBackward0>)",0.10796211784880419,0.10399223119020462
+6,"tensor(0.0014, device='cuda:0', grad_fn=<DivBackward0>)",0.10798677947402299,0.10404959321022034
+7,"tensor(0.0014, device='cuda:0', grad_fn=<DivBackward0>)",0.1079669018979523,0.10400272905826569
+8,"tensor(0.0014, device='cuda:0', grad_fn=<DivBackward0>)",0.10801467077750022,0.10409573465585709
+9,"tensor(0.0014, device='cuda:0', grad_fn=<DivBackward0>)",0.10794745035641835,0.10393165051937103
+10,"tensor(0.0014, device='cuda:0', grad_fn=<DivBackward0>)",0.107984604460843,0.104034923017025
+11,"tensor(0.0014, device='cuda:0', grad_fn=<DivBackward0>)",0.1079705880856773,0.10399022698402405
+12,"tensor(0.0013, device='cuda:0', grad_fn=<DivBackward0>)",0.10798090475453877,0.10401791334152222
+13,"tensor(0.0013, device='cuda:0', grad_fn=<DivBackward0>)",0.10797265672723574,0.10399332642555237
+14,"tensor(0.0013, device='cuda:0', grad_fn=<DivBackward0>)",0.10797917960778888,0.10400991141796112
+15,"tensor(0.0013, device='cuda:0', grad_fn=<DivBackward0>)",0.10797745816453183,0.10398925840854645
+16,"tensor(0.0014, device='cuda:0', grad_fn=<DivBackward0>)",0.10797957853873681,0.10400126874446869
+17,"tensor(0.0013, device='cuda:0', grad_fn=<DivBackward0>)",0.10797686457600757,0.10399870574474335
+18,"tensor(0.0013, device='cuda:0', grad_fn=<DivBackward0>)",0.10799125610005061,0.10403167456388474
+19,"tensor(0.0013, device='cuda:0', grad_fn=<DivBackward0>)",0.10797857065724277,0.10399660468101501

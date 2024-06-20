@@ -28,7 +28,7 @@ transform_test = transforms.Compose([
 def rgb2gray(rgb):
     return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
 
-raw_img = io.imread('images/1.jpg')
+raw_img = io.imread('images/happy49.jpg')
 gray = rgb2gray(raw_img)
 gray = resize(gray, (48,48), mode='symmetric').astype(np.uint8)
 img = gray[:, :, np.newaxis]

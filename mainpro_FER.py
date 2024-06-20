@@ -33,24 +33,28 @@ use_cuda = torch.cuda.is_available()
 
 # for classify
 best_PublicTest_acc = 0  # best PublicTest accuracy
-best_PublicTest_acc_epoch = 0
+best_PublicTest_acc_epoch = -1
 best_PrivateTest_acc = 0  # best PrivateTest accuracy
-best_PrivateTest_acc_epoch = 0
+best_PrivateTest_acc_epoch = -1
 # for V
-best_PublicTest_AveragelossV = torch.tensor(float('inf'), dtype=torch.float32)  # best PublicTest accuracy
-best_PublicTest_epoch_lossV = 0
-best_PrivateTest_epoch_lossV = 0
-best_PrivateTest_AveragelossV = torch.tensor(float('inf'), dtype=torch.float32)  # best PrivateTest accuracy
+best_PublicTest_AveragelossV = 10.0  # best PublicTest accuracy
+best_PublicTest_epoch_lossV = -1
+best_PrivateTest_epoch_lossV = -1
+best_PrivateTest_AveragelossV = 10.0  # best PrivateTest accuracy
 # for A
-best_PublicTest_AveragelossA = torch.tensor(float('inf'), dtype=torch.float32)  # best PublicTest accuracy
-best_PublicTest_epoch_lossA = 0
-best_PrivateTest_epoch_lossA = 0
-best_PrivateTest_AveragelossA = torch.tensor(float('inf'), dtype=torch.float32)  # best PrivateTest accuracy
+best_PublicTest_AveragelossA = 10.0  # best PublicTest accuracy
+best_PublicTest_epoch_lossA = -1
+best_PrivateTest_epoch_lossA = -1
+best_PrivateTest_AveragelossA = 10.0  # best PrivateTest accuracy
 # for D
-best_PublicTest_AveragelossD = torch.tensor(float('inf'), dtype=torch.float32)  # best PublicTest accuracy
-best_PublicTest_epoch_lossD = 0
-best_PrivateTest_epoch_lossD = 0
-best_PrivateTest_AveragelossD = torch.tensor(float('inf'), dtype=torch.float32)  # best PrivateTest accuracy
+best_PublicTest_AveragelossD = 10.0  # best PublicTest accuracy
+best_PublicTest_epoch_lossD = -1
+best_PrivateTest_epoch_lossD = -1
+best_PrivateTest_AveragelossD = 10.0  # best PrivateTest accuracy
+
+PublicTest_loss_regressV = 0.0
+PublicTest_loss_regressA = 0.0
+PublicTest_loss_regressD = 0.0
 
 start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 
@@ -59,8 +63,7 @@ learning_rate_decay_every = 5  # 5
 learning_rate_decay_rate = 0.9  # 0.9
 
 cut_size = 44
-# total_epoch = 2
-total_epoch = 120
+total_epoch = 20
 
 path_classify = os.path.join(opt.dataset + '_' + opt.model_classify)
 path_regressV = os.path.join(opt.dataset + '_' + opt.model_regressV)
@@ -108,7 +111,7 @@ def consistency(label, V, A, D):  # according to the consistency between categor
     ndarray_D = tensor_cpu_D.numpy()
     D = ndarray_D
 
-    Label_VAD_ThanZero=VADLabelFileRead()
+    Label_VAD_ThanZero = VADLabelFileRead()
 
     for index in range(length):  # the indexth img in the batch
         print("index" + str(index))
@@ -151,7 +154,8 @@ transform_test = transforms.Compose([
 ])
 
 trainset = FER2013(split='Training', transform=transform_train)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=opt.bs, shuffle=True, num_workers=1)
+#trainloader = torch.utils.data.DataLoader(trainset, batch_size=opt.bs, shuffle=True, num_workers=1)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=opt.bs, shuffle=False, num_workers=1)
 PublicTestset = FER2013(split='PublicTest', transform=transform_test)
 PublicTestloader = torch.utils.data.DataLoader(PublicTestset, batch_size=opt.bs, shuffle=False, num_workers=1)
 PrivateTestset = FER2013(split='PrivateTest', transform=transform_test)
@@ -189,8 +193,10 @@ if use_cuda:
 
 criterion_classify = nn.CrossEntropyLoss()
 criterion_regress = nn.MSELoss()
-optimizer = optim.SGD(list(net_classify.parameters()) + list(net_regressV.parameters()) + list(net_regressA.parameters()) + list(net_regressD.parameters()), lr=opt.lr, momentum=0.9,
-                      weight_decay=5e-4)
+optimizer = optim.SGD(
+    list(net_classify.parameters()) + list(net_regressV.parameters()) + list(net_regressA.parameters()) + list(
+        net_regressD.parameters()), lr=opt.lr, momentum=0.9,
+    weight_decay=5e-4)
 
 # create 3 list to save the accuracies of train, public test, and private test.
 trainAccuracyList_classify = list()
@@ -207,10 +213,12 @@ trainLossList_regressD = list()
 pubtestLossList_regressD = list()
 privatetestLossList_regressD = list()
 
-Train_acc_classify = 0.0
+Train_acc_classify: float = 0.0
 Train_loss_regressV = 0.0
 Train_loss_regressA = 0.0
 Train_loss_regressD = 0.0
+
+print(net_classify)  #just for analyzing the structure of ResNet18.
 
 
 # Training
@@ -230,14 +238,7 @@ def train(epoch):
     net_regressA.train()
     net_regressD.train()
 
-    train_loss_classify = 0.0
-    train_loss_regressV = 0.0
-    train_loss_regressA = 0.0
-    train_loss_regressD = 0.0
     correct_classify = 0
-    total_regressV = 0
-    total_regressA = 0
-    total_regressD = 0
     total_classify = 0
 
     if epoch > learning_rate_decay_start and learning_rate_decay_start >= 0:
@@ -249,14 +250,15 @@ def train(epoch):
         current_lr = opt.lr
     print('learning_rate: %s' % str(current_lr))
 
-    for batch_idx, (inputs, target_classify, target_regressV, target_regressA, target_regressD) in enumerate(trainloader):
+    for batch_idx, (inputs, target_classify, target_regressV, target_regressA, target_regressD) in enumerate(
+            trainloader):
         inputs, target_classify, target_regressV, target_regressA, target_regressD = inputs.float(), target_classify, target_regressV.float(), target_regressA.float(), target_regressD.float()
         if use_cuda:
             inputs, target_classify, target_regressV, target_regressA, target_regressD = inputs.cuda(), target_classify.cuda(), target_regressV.cuda(), target_regressA.cuda(), target_regressD.cuda()
         optimizer.zero_grad()
-        inputs, target_classify, target_regressV, target_regressA, target_regressD = Variable(inputs), Variable(target_classify), Variable(
+        inputs, target_classify, target_regressV, target_regressA, target_regressD = Variable(inputs), Variable(
+            target_classify), Variable(
             target_regressV), Variable(target_regressA), Variable(target_regressD)
-
 
         # forward pass for classify
         outputs_classify = net_classify(inputs)
@@ -340,7 +342,8 @@ def train(epoch):
         label_tensors_regressD = torch.tensor(outputs_regressD, dtype=torch.float32)
         label_tensors_regressD = torch.flatten(label_tensors_regressD)
 
-        consist_loss = consistency(label_tensors_classify, label_tensors_regressV, label_tensors_regressA, label_tensors_regressD)    #this is the most important, get consist for a batch of imgs among according to their label, V, A and D.
+        consist_loss = consistency(label_tensors_classify, label_tensors_regressV, label_tensors_regressA,
+                                   label_tensors_regressD)  #this is the most important, get consist for a batch of imgs among according to their label, V, A and D.
         total_loss += consist_loss  # 求总loss = 4 network loss+consistency loss(label, VAD consistency for the batch of imgs)
 
         total_loss.backward()  ############# to here, backward problem.solved, to float before entering criterion. it does this just after load data from batch in this case.
@@ -386,6 +389,10 @@ def PublicTest(epoch):
     net_regressA.eval()
     net_regressD.eval()
 
+    global PublicTest_loss_regressV
+    global PublicTest_loss_regressA
+    global PublicTest_loss_regressD
+
     PublicTest_loss_classify = 0.0
     PublicTest_loss_regressV = 0.0
     PublicTest_loss_regressA = 0.0
@@ -398,14 +405,18 @@ def PublicTest(epoch):
     total_regressA = 0
     total_regressD = 0
 
-    for batch_idx, (inputs, target_classify, target_regressV, target_regressA, target_regressD) in enumerate(PublicTestloader):
+    for batch_idx, (inputs, target_classify, target_regressV, target_regressA, target_regressD) in enumerate(
+            PublicTestloader):
+        #a = batch_idx
+        #print(a)
         bs, ncrops, c, h, w = np.shape(inputs)
         inputs = inputs.view(-1, c, h, w)
         if use_cuda:
             inputs, target_classify, target_regressV, target_regressA, target_regressD = inputs.cuda(), target_classify.cuda(), target_regressV.cuda(), target_regressA.cuda(), target_regressD.cuda()
 
         with torch.no_grad():
-            inputs, target_classify, target_regressV, target_regressA, target_regressD = Variable(inputs), Variable(target_classify), Variable(
+            inputs, target_classify, target_regressV, target_regressA, target_regressD = Variable(inputs), Variable(
+                target_classify), Variable(
                 target_regressV), Variable(target_regressA), Variable(target_regressD)
         ############
         # forward pass for classify&regress
@@ -421,28 +432,33 @@ def PublicTest(epoch):
         _, predicted_classify = torch.max(outputs_avg_classify.data, 1)
         total_classify += target_classify.size(0)
         correct_classify += predicted_classify.eq(target_classify.data).cpu().sum()  # solved.
-        '''
-        utils.progress_bar(batch_idx, len(PublicTestloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
-                           % (PublicTest_loss / (batch_idx + 1), 100. * correct / total, correct, total))
-        '''
+
+        if batch_idx == 223:
+            print("it's near the end of the data")
         #for V regress loss
         outputs_avg_regressV = outputs_regressV.view(bs, ncrops, -1).mean(1)  # avg over crops
-        loss_regressV = criterion_regress(outputs_avg_regressV, target_regressV)
-        PublicTest_loss_regressV += loss_regressV.data
-        total_regressV+= target_regressV.size(0)  # total_regress: total number of samples
+        loss_regressV = criterion_regress(outputs_avg_regressV, target_regressV).item()
+        if np.isnan(loss_regressV):
+            print("loss_regressV is NaN")
+        PublicTest_loss_regressV += loss_regressV
+        if np.isnan(loss_regressV):
+            print("PublicTest_loss_regressV is NaN")
+        print(PublicTest_loss_regressV)  # just for test
+        total_regressV += target_regressV.size(0)  # total_regress: total number of samples
 
         # for A regress loss
         outputs_avg_regressA = outputs_regressA.view(bs, ncrops, -1).mean(1)  # avg over crops
-        loss_regressA = criterion_regress(outputs_avg_regressA, target_regressA)
-        PublicTest_loss_regressA += loss_regressA.data
+        loss_regressA = criterion_regress(outputs_avg_regressA, target_regressA).item()
+        PublicTest_loss_regressA += loss_regressA
+        print(PublicTest_loss_regressA)  # just for test
         total_regressA += target_regressA.size(0)  # total_regress: total number of samples
 
         # for D regress loss
         outputs_avg_regressD = outputs_regressD.view(bs, ncrops, -1).mean(1)  # avg over crops
-        loss_regressD = criterion_regress(outputs_avg_regressD, target_regressD)
-        PublicTest_loss_regressD += loss_regressD.data
+        loss_regressD = criterion_regress(outputs_avg_regressD, target_regressD).item()
+        PublicTest_loss_regressD += loss_regressD
+        print(PublicTest_loss_regressD)  # just for test
         total_regressD += target_regressD.size(0)  # total_regress: total number of samples
-
 
     # Save checkpoint: classify.
     PublicTest_acc = 100. * correct_classify / total_classify
@@ -450,22 +466,22 @@ def PublicTest(epoch):
     global best_PublicTest_acc
     global best_PublicTest_acc_epoch
     if PublicTest_acc > best_PublicTest_acc:
+        best_PublicTest_acc = PublicTest_acc
+        best_PublicTest_acc_epoch = epoch
         print('Saving..')
-        print("best_PublicTest_acc: %0.3f" % PublicTest_acc)
+        print("best_PublicTest_acc: %0.3f" % best_PublicTest_acc)
         state = {
             'net': net_classify.state_dict() if use_cuda else net_classify,
-            'acc': PublicTest_acc,
-            'epoch': epoch,
+            'acc': best_PublicTest_acc,
+            'epoch': best_PublicTest_acc_epoch,
         }
         if not os.path.isdir(path_classify):
             os.mkdir(path_classify)
         torch.save(state, os.path.join(path_classify, 'PublicTest_model_classify.t7'))
-        best_PublicTest_acc = PublicTest_acc
-        best_PublicTest_acc_epoch = epoch
 
     # save checkpoint: V regress
     PublicTest_av_lossV = PublicTest_loss_regressV / total_regressV
-    PublicTest_av_lossV = PublicTest_av_lossV.item()
+    PublicTest_av_lossV = PublicTest_av_lossV
     pubtestLossList_regressV.append(PublicTest_av_lossV)
     print(f'PublicTest_av_lossV: {PublicTest_av_lossV:.3f} ')
     global best_PublicTest_AveragelossV  # best PublicTest accuracy
@@ -474,11 +490,11 @@ def PublicTest(epoch):
         best_PublicTest_AveragelossV = PublicTest_av_lossV
         best_PublicTest_epoch_lossV = epoch
         print('SavingV..')
-        print("best_PublicTest_AveragelossV: %0.3f" % PublicTest_av_lossV)
+        print("best_PublicTest_AveragelossV: %0.3f" % best_PublicTest_AveragelossV)
         state = {
             'net': net_regressV.state_dict() if use_cuda else net_regressV,
-            'loss': PublicTest_av_lossV,
-            'epoch': epoch,
+            'loss': best_PublicTest_AveragelossV,
+            'epoch': best_PublicTest_epoch_lossV,
         }
         if not os.path.isdir(path_regressV):
             os.mkdir(path_regressV)
@@ -486,7 +502,7 @@ def PublicTest(epoch):
 
     # save checkpoint: A regress
     PublicTest_av_lossA = PublicTest_loss_regressA / total_regressA
-    PublicTest_av_lossA = PublicTest_av_lossA.item()
+    PublicTest_av_lossA = PublicTest_av_lossA
     pubtestLossList_regressA.append(PublicTest_av_lossA)
     print(f'PublicTest_av_lossA: {PublicTest_av_lossA:.3f} ')
     global best_PublicTest_AveragelossA  # best PublicTest accuracy
@@ -498,8 +514,8 @@ def PublicTest(epoch):
         print("best_PublicTest_AveragelossA: %0.3f" % PublicTest_av_lossA)
         state = {
             'net': net_regressA.state_dict() if use_cuda else net_regressA,
-            'loss': PublicTest_av_lossA,
-            'epoch': epoch,
+            'loss': best_PublicTest_AveragelossA,
+            'epoch': best_PublicTest_epoch_lossA,
         }
         if not os.path.isdir(path_regressA):
             os.mkdir(path_regressA)
@@ -507,7 +523,7 @@ def PublicTest(epoch):
 
     # save checkpoint: D regress
     PublicTest_av_lossD = PublicTest_loss_regressD / total_regressD
-    PublicTest_av_lossD = PublicTest_av_lossD.item()
+    PublicTest_av_lossD = PublicTest_av_lossD
     pubtestLossList_regressD.append(PublicTest_av_lossD)
     print(f'PublicTest_av_lossD: {PublicTest_av_lossD:.3f} ')
     global best_PublicTest_AveragelossD  # best PublicTest accuracy
@@ -519,8 +535,8 @@ def PublicTest(epoch):
         print("best_PublicTest_AveragelossD: %0.3f" % PublicTest_av_lossD)
         state = {
             'net': net_regressD.state_dict() if use_cuda else net_regressD,
-            'loss': PublicTest_av_lossD,
-            'epoch': epoch,
+            'loss': best_PublicTest_AveragelossD,
+            'epoch': best_PublicTest_epoch_lossD,
         }
         if not os.path.isdir(path_regressD):
             os.mkdir(path_regressD)
@@ -545,13 +561,15 @@ def PrivateTest(epoch):
     total_regressSampleA = 0
     total_regressSampleD = 0
 
-    for batch_idx, (inputs, target_classify, target_regressV, target_regressA, target_regressD) in enumerate(PrivateTestloader):
+    for batch_idx, (inputs, target_classify, target_regressV, target_regressA, target_regressD) in enumerate(
+            PrivateTestloader):
         bs, ncrops, c, h, w = np.shape(inputs)
         inputs = inputs.view(-1, c, h, w)
         if use_cuda:
             inputs, target_classify, target_regressV, target_regressA, target_regressD = inputs.cuda(), target_classify.cuda(), target_regressV.cuda(), target_regressA.cuda(), target_regressD.cuda()
         with torch.no_grad():
-            inputs, target_classify, target_regressV, target_regressA, target_regressD = Variable(inputs), Variable(target_classify), Variable(
+            inputs, target_classify, target_regressV, target_regressA, target_regressD = Variable(inputs), Variable(
+                target_classify), Variable(
                 target_regressV), Variable(target_regressA), Variable(target_regressD)
 
         # forward pass for classify&regress
@@ -569,10 +587,6 @@ def PrivateTest(epoch):
         total_classify += target_classify.size(0)
         correct_classify += predicted_classify.eq(target_classify.data).cpu().sum()
 
-        '''
-        utils.progress_bar(batch_idx, len(PublicTestloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
-                           % (PrivateTest_loss / (batch_idx + 1), 100. * correct / total, correct, total))
-        '''
         # regress handle
         # for V
         outputs_avg_regressV = outputs_regressV.view(bs, ncrops, -1).mean(1)  # avg over crops
@@ -608,9 +622,9 @@ def PrivateTest(epoch):
         state = {
             'net': net_classify.state_dict() if use_cuda else net_classify,
             'best_PublicTest_acc': best_PublicTest_acc,
-            'best_PrivateTest_acc': PrivateTest_acc,
+            'best_PrivateTest_acc': best_PrivateTest_acc,
             'best_PublicTest_acc_epoch': best_PublicTest_acc_epoch,
-            'best_PrivateTest_acc_epoch': epoch,
+            'best_PrivateTest_acc_epoch': best_PrivateTest_acc_epoch
         }
         if not os.path.isdir(path_classify):
             os.mkdir(path_classify)
@@ -626,15 +640,15 @@ def PrivateTest(epoch):
     global best_PrivateTest_epoch_lossV
     if PrivateTest_av_lossV < best_PrivateTest_AveragelossV:  # 改为<=
         best_PrivateTest_AveragelossV = PrivateTest_av_lossV
-        best_PrivateTest_Averageloss_epochV = epoch
+        best_PrivateTest_epoch_lossV = epoch
         print('SavingV..')
         print("best_PrivateTest_AveragelossV: %0.3f" % best_PrivateTest_AveragelossV)
         state = {
             'net': net_regressV.state_dict() if use_cuda else net_regressV,
             'best_PublicTest_AveragelossV': best_PublicTest_AveragelossV,
             'best_PrivateTest_AveragelossV': best_PrivateTest_AveragelossV,
-            'best_PublicTest_acc_epochV': best_PublicTest_epoch_lossV,
-            'best_PrivateTest_Averageloss_epochV': best_PrivateTest_Averageloss_epochV,
+            'best_PublicTest_epoch_lossV': best_PublicTest_epoch_lossV,
+            'best_PrivateTest_epoch_lossV': best_PrivateTest_epoch_lossV
         }
         if not os.path.isdir(path_regressV):
             os.mkdir(path_regressV)
@@ -650,15 +664,15 @@ def PrivateTest(epoch):
     global best_PrivateTest_epoch_lossA
     if PrivateTest_av_lossA < best_PrivateTest_AveragelossA:  # 改为<=
         best_PrivateTest_AveragelossA = PrivateTest_av_lossA
-        best_PrivateTest_Averageloss_epochA = epoch
+        best_PrivateTest_epoch_lossA = epoch
         print('SavingA..')
         print("best_PrivateTest_AveragelossA: %0.3f" % best_PrivateTest_AveragelossA)
         state = {
             'net': net_regressA.state_dict() if use_cuda else net_regressA,
             'best_PublicTest_AveragelossA': best_PublicTest_AveragelossA,
             'best_PrivateTest_AveragelossA': best_PrivateTest_AveragelossA,
-            'best_PublicTest_acc_epochA': best_PublicTest_epoch_lossA,
-            'best_PrivateTest_Averageloss_epochA': best_PrivateTest_Averageloss_epochA,
+            'best_PublicTest_epoch_lossA': best_PublicTest_epoch_lossA,
+            'best_PrivateTest_epoch_lossA': best_PrivateTest_epoch_lossA
         }
         if not os.path.isdir(path_regressA):
             os.mkdir(path_regressA)
@@ -672,9 +686,9 @@ def PrivateTest(epoch):
         print(f'privatetestLossList_regressD: {loss:.3f}')
     global best_PrivateTest_AveragelossD
     global best_PrivateTest_epoch_lossD
-    if PrivateTest_av_lossD < best_PrivateTest_AveragelossD:  # 改为<=
+    if PrivateTest_av_lossD <= best_PrivateTest_AveragelossD:  # 改为<=
         best_PrivateTest_AveragelossD = PrivateTest_av_lossD
-        best_PrivateTest_Averageloss_epochD = epoch
+        best_PrivateTest_epoch_lossD = epoch
         print('SavingD..')
         print("best_PrivateTest_AveragelossD: %0.3f" % best_PrivateTest_AveragelossD)
         state = {
@@ -682,11 +696,11 @@ def PrivateTest(epoch):
             'best_PublicTest_AveragelossD': best_PublicTest_AveragelossD,
             'best_PrivateTest_AveragelossD': best_PrivateTest_AveragelossD,
             'best_PublicTest_acc_epochD': best_PublicTest_epoch_lossD,
-            'best_PrivateTest_Averageloss_epochD': best_PrivateTest_Averageloss_epochD,
+            'best_PrivateTest_epoch_lossD': best_PrivateTest_epoch_lossD,
         }
         if not os.path.isdir(path_regressD):
             os.mkdir(path_regressD)
-        torch.save(state, os.path.join(path_regressD, 'PrivateTest_model_privateA.t7'))
+        torch.save(state, os.path.join(path_regressD, 'PrivateTest_model_privateD.t7'))
 
 
 if __name__ == '__main__':

@@ -22,7 +22,8 @@ class FER2013(data.Dataset):
         self.transform = transform
         self.split = split  # training set or test set
         if self.split == 'Training':
-            self.data = pd.read_csv("./data/outputTrain_forVA - yh-2-20240117.csv")
+            self.data = pd.read_csv("./data/train-20240507-yh.csv")
+            #self.data = pd.read_csv("./data/outputTrain_forVA - yh-2-20240117.csv")
             self.train_data = self.data['pixels']
 
             self.train_labels_classify = self.data['emotion']
@@ -31,7 +32,8 @@ class FER2013(data.Dataset):
             self.train_labels_regressD = self.data['Dominance']
             self.train_data = np.asarray(self.train_data)
         elif self.split == 'PublicTest':
-            self.data = pd.read_csv("./data/3 outputPublicTest_forVAD-20240117.csv")
+            self.data = pd.read_csv("./data/publictest-20240609-2-yh.csv")
+            #self.data = pd.read_csv("./data/3 outputPublicTest_forVAD-20240117.csv")
             self.PublicTest_data = self.data['pixels']
             new_index = np.arange(len(self.PublicTest_data))
             self.PublicTest_data = pd.Series(self.PublicTest_data.values, index=new_index)
@@ -48,7 +50,8 @@ class FER2013(data.Dataset):
 
             self.PublicTest_data = np.asarray(self.PublicTest_data)
         else:
-            self.data = pd.read_csv("./data/3. outputPrivateTest_forVAD - 20240117.csv")
+            self.data = pd.read_csv("./data/privatetest-20240506-yh.csv")
+            #self.data = pd.read_csv("./data/3. outputPrivateTest_forVAD - 20240117.csv")
             self.PrivateTest_data = self.data['pixels']
             new_index = np.arange(len(self.PrivateTest_data))
             self.PrivateTest_data = pd.Series(self.PrivateTest_data.values, index=new_index)

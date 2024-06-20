@@ -6,18 +6,18 @@
   <component name="ChangeListManager">
     <list default="true" id="5b144573-5cc0-4a2d-a882-99f6a6f9b4d2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/4. OCFER-VA.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.vs/7. OCFERNet-V-category - 20240208 - 2/FileContentIndex/3f26ae6a-7833-4978-a1fb-3b6758897a35.vsidx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.vs/7. OCFERNet-V-category - 20240208 - 2/v17/.wsuo" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.vs/7. OCFERNet-V-category - 20240208 - 2/v17/workspaceFileList.bin" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.vs/VSWorkspaceState.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.vs/slnx.sqlite" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AccProcess_classify.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AccProcess_regressA.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AccProcess_regressD.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AccProcess_regressV.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AccProcess_classify.csv" beforeDir="false" afterPath="$PROJECT_DIR$/AccProcess_classify.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AccProcess_regressA.csv" beforeDir="false" afterPath="$PROJECT_DIR$/AccProcess_regressA.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AccProcess_regressD.csv" beforeDir="false" afterPath="$PROJECT_DIR$/AccProcess_regressD.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AccProcess_regressV.csv" beforeDir="false" afterPath="$PROJECT_DIR$/AccProcess_regressV.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CK+48/anger/S010_004_00000017.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/CK+48/anger/S010_004_00000018.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/CK+48/anger/S010_004_00000019.png" beforeDir="false" />
@@ -1000,12 +1000,17 @@
       <change beforePath="$PROJECT_DIR$/CK+48/surprise/S138_004_00000012.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/CK+48/surprise/S138_004_00000013.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/FER-ResNet model.odt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/FER2013_VGG19/PrivateTest_model.t7" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/FER2013_VGG19/PublicTest_model.t7" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FER2013_ResNet18RegressionTwoOutputs/PrivateTest_model_privateA.t7" beforeDir="false" afterPath="$PROJECT_DIR$/FER2013_ResNet18RegressionTwoOutputs/PrivateTest_model_privateA.t7" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FER2013_ResNet18RegressionTwoOutputs/PrivateTest_model_privateV.t7" beforeDir="false" afterPath="$PROJECT_DIR$/FER2013_ResNet18RegressionTwoOutputs/PrivateTest_model_privateV.t7" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FER2013_ResNet18RegressionTwoOutputs/PublicTest_model_regressA.t7" beforeDir="false" afterPath="$PROJECT_DIR$/FER2013_ResNet18RegressionTwoOutputs/PublicTest_model_regressA.t7" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FER2013_ResNet18RegressionTwoOutputs/PublicTest_model_regressD.t7" beforeDir="false" afterPath="$PROJECT_DIR$/FER2013_ResNet18RegressionTwoOutputs/PublicTest_model_regressD.t7" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FER2013_ResNet18RegressionTwoOutputs/PublicTest_model_regressV.t7" beforeDir="false" afterPath="$PROJECT_DIR$/FER2013_ResNet18RegressionTwoOutputs/PublicTest_model_regressV.t7" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FER2013_Resnet18/PrivateTest_model_classify.t7" beforeDir="false" afterPath="$PROJECT_DIR$/FER2013_Resnet18/PrivateTest_model_classify.t7" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FER2013_Resnet18/PublicTest_model_classify.t7" beforeDir="false" afterPath="$PROJECT_DIR$/FER2013_Resnet18/PublicTest_model_classify.t7" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/OCNN-ResNet Model.odt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Readme.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/3286AC20" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/data/CK_data.h5" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/data/VAD_category_consistency_loss_all-20240220 - 副本 - 副本.xlsx" beforeDir="false" />
@@ -1015,9 +1020,13 @@
       <change beforePath="$PROJECT_DIR$/data/test_read-VAD_category_consistency_loss_all-20240220.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/diff.odt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/draw pictures code-VAD_category.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fer.py" beforeDir="false" afterPath="$PROJECT_DIR$/fer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/2.jpg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/mainpro_CK+.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/mainpro_FER-20240219.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/plot_CK+_confusion_matrix.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plot_fer2013_confusion_matrix.py" beforeDir="false" afterPath="$PROJECT_DIR$/plot_fer2013_confusion_matrix.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess_CK+.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pure category FER results-20240208/.idea/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pure category FER results-20240208/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
@@ -1037,6 +1046,7 @@
       <change beforePath="$PROJECT_DIR$/run.odt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/t.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualize.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualize.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/your_file.h5" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -1044,12 +1054,30 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2d54GC8TAsRaWuFDT2OiaxnY5jw" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -1057,18 +1085,47 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.aa.executor": "Run",
+    "Python.dataClean_NaN.executor": "Debug",
+    "Python.mainpro_FER.executor": "Debug",
+    "Python.plot_fer2013_confusion_matrix.executor": "Debug",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/yihuo/anaconda3/condabin/conda.bat",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="Multi-task Emotion Recognition" sdk-home="C:\Users\yihuo\anaconda3\envs\pyskl\python.exe">
+        <option name="sdk">
+          <Sdk />
+        </option>
+        <option name="mySdkHome" value="C:\Users\yihuo\anaconda3\envs\pyskl\python.exe" />
+        <option name="mySdk">
+          <Sdk />
+        </option>
+        <option name="myModuleName" value="Multi-task Emotion Recognition" />
+      </console-settings>
+    </option>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.17011.127" />
+        <option value="bundled-python-sdk-48aec45f0201-7e9c3bbb6e34-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.17011.127" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -1078,13 +1135,76 @@
       <option name="presentableId" value="Default" />
       <updated>1709284511441</updated>
       <workItem from="1709284515077" duration="1121000" />
+      <workItem from="1710843538356" duration="44000" />
+      <workItem from="1710937418424" duration="983000" />
+      <workItem from="1710981469256" duration="3161000" />
+      <workItem from="1715514281878" duration="745000" />
+      <workItem from="1715516161773" duration="2343000" />
+      <workItem from="1715656522910" duration="5948000" />
+      <workItem from="1715732085092" duration="5488000" />
+      <workItem from="1716623605533" duration="9136000" />
+      <workItem from="1717038819528" duration="4879000" />
+      <workItem from="1717249335579" duration="641000" />
+      <workItem from="1717336381291" duration="95000" />
+      <workItem from="1717336818657" duration="2396000" />
+      <workItem from="1717370582631" duration="666000" />
+      <workItem from="1717420431110" duration="1365000" />
+      <workItem from="1717463484379" duration="753000" />
+      <workItem from="1717465915606" duration="8222000" />
+      <workItem from="1717661995584" duration="716000" />
+      <workItem from="1717741021938" duration="3256000" />
+      <workItem from="1717756419232" duration="1917000" />
+      <workItem from="1717917710828" duration="12264000" />
+      <workItem from="1717982388080" duration="2000" />
+      <workItem from="1718008224962" duration="6889000" />
+      <workItem from="1718269785619" duration="14463000" />
+      <workItem from="1718331788519" duration="6877000" />
+      <workItem from="1718592522089" duration="1045000" />
+      <workItem from="1718707592222" duration="11220000" />
+      <workItem from="1718761607568" duration="26135000" />
+      <workItem from="1718847185526" duration="1041000" />
+      <workItem from="1718848301967" duration="12209000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/plot_fer2013_confusion_matrix.py</url>
+          <line>101</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/mainpro_FER.py</url>
+          <line>441</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/mainpro_FER.py</url>
+          <line>444</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dataClean_NaN.py</url>
+          <line>10</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/mainpro_FER_py$visualize.coverage" NAME="visualize Coverage Results" MODIFIED="1710983747894" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/mainpro_FER_py$mainpro_FER.coverage" NAME="mainpro_FER Coverage Results" MODIFIED="1718852666557" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Multi_task_Emotion_Recognition$mainpro_FER.coverage" NAME="mainpro_FER Coverage Results" MODIFIED="1709285570221" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/mainpro_FER_py$aa.coverage" NAME="aa Coverage Results" MODIFIED="1718281566252" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/preprocess_fer2013_py$plot_fer2013_confusion_matrix.coverage" NAME="plot_fer2013_confusion_matrix Coverage Results" MODIFIED="1717758059861" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/plot_fer2013_confusion_matrix_py$plot_fer2013_confusion_matrix.coverage" NAME="plot_fer2013_confusion_matrix Coverage Results" MODIFIED="1717746823729" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/mainpro_FER_py$plot_fer2013_confusion_matrix.coverage" NAME="plot_fer2013_confusion_matrix Coverage Results" MODIFIED="1717933998141" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/mainpro_FER_py$dataClean_NaN.coverage" NAME="dataClean_NaN Coverage Results" MODIFIED="1718852644217" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/visualize_py$visualize.coverage" NAME="visualize Coverage Results" MODIFIED="1716634695872" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
