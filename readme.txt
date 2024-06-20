@@ -8,5 +8,11 @@ The txt file is named as "data.txt", which save the running process sequencially
 For the best trained models mentioned above, they are saved under "./FER2013_ResNet18RegressionTwoOutputs/" as 4 "***.t7" files, with each of them corresponding to best prediction modelsV, A, D, and Emotion category respectively. Please select the "private.t7" models. And then, these 4 models could be applied for VAD and category emotion recognition in applications.
 
 
-Updated on March 19
 visualize.py now can predict emotion category, VAD information together.
+
+
+This version uses the complete VAD annotated FER2013 with ~2.8w train images, ~3k public test images, and ~3k private test images. It has removed the images which are not face looking.
+The dataset is in data.rar, which is required to be depressed before running the mainFER.py.
+
+
+Updated on June 20th.
