@@ -13,29 +13,13 @@ import torch.nn.functional as F
 import os
 import argparse
 from fer import FER2013
-
-
 from torch.autograd import Variable
-import torchvision
-import transforms as transforms
+import torchvision.transforms as transforms
 from sklearn.metrics import confusion_matrix
 from models import *
 
-
-
-parser = argparse.ArgumentParser(description='PyTorch Fer2013 CNN Training')
-parser.add_argument('--model', type=str, default='ResNet18', help='CNN architecture')
-parser.add_argument('--dataset', type=str, default='FER2013', help='CNN architecture')
-parser.add_argument('--split', type=str, default='PublicTest', help='split')
-opt = parser.parse_args()
-
-cut_size = 44
-
-transform_test = transforms.Compose([
-    transforms.TenCrop(cut_size),
-    transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops])),
-])
-
+def to_tensor_stack(crops):
+    return torch.stack([transforms.ToTensor()(crop) for crop in crops])
 
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
@@ -67,73 +51,85 @@ def plot_confusion_matrix(cm, classes,
                  horizontalalignment="center",
                  color="white" if cm[i, j] > thresh else "black")
 
-
     plt.ylabel('True label', fontsize=18)
     plt.xlabel('Predicted label', fontsize=18)
     plt.tight_layout()
 
-class_names = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
+def main():
+    parser = argparse.ArgumentParser(description='PyTorch Fer2013 CNN Training')
+    parser.add_argument('--model', type=str, default='Resnet18', help='CNN architecture')
+    parser.add_argument('--dataset', type=str, default='FER2013', help='CNN architecture')
+    parser.add_argument('--split', type=str, default='PrivateTest', help='split')
+    opt = parser.parse_args()
 
-# Model
-if opt.model == 'VGG19':
-    net = VGG('VGG19')
-elif opt.model == 'ResNet18':
-    net = ResNet18()
+    cut_size = 44
 
+    transform_test = transforms.Compose([
+        transforms.TenCrop(cut_size),
+        transforms.Lambda(to_tensor_stack),
+    ])
 
-'''#add by HY
-net=ResNet18()
-print(net)
-#add by HY'''
+    class_names = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
-path = os.path.join(opt.dataset + '_' + opt.model)
-split=opt.split
-# checkpoint = torch.load(os.path.join(path, opt.split + '_model.t7'))
-modelPath=os.path.join(path, split + '_model_classify.t7')
-# checkpoint = torch.load(os.path.join(path, split + '_model_private.t7'))
-checkpoint = torch.load(modelPath)
+    # Model
+    if opt.model == 'VGG19':
+        net = VGG('VGG19')
+    elif opt.model == 'Resnet18':
+        net = ResNet18()
 
-net.load_state_dict(checkpoint['net'])
-net.cuda()
-net.eval()
-Testset = FER2013(split = opt.split, transform=transform_test)
-#modified by HY
-#Testloader = torch.utils.data.DataLoader(Testset, batch_size=128, shuffle=False, num_workers=1)
-Testloader = torch.utils.data.DataLoader(Testset, batch_size=16, shuffle=False, num_workers=1)
-#modified by HY
-correct = 0
-total = 0
-all_target = []
-for batch_idx, (inputs, targets) in enumerate(Testloader):
+    path = os.path.join(opt.dataset + '_' + opt.model)
+    split = opt.split
+    modelPath = os.path.join(path, split + '_model_classify.t7')
+    checkpoint = torch.load(modelPath)
 
-    bs, ncrops, c, h, w = np.shape(inputs)
-    inputs = inputs.view(-1, c, h, w)
-    inputs, targets = inputs.cuda(), targets.cuda()
-    inputs, targets = Variable(inputs, volatile=True), Variable(targets)
-    outputs = net(inputs)
+    net.load_state_dict(checkpoint['net'])
+    net.cuda()
+    net.eval()
+    Testset = FER2013(split=opt.split, transform=transform_test)
+    Testloader = torch.utils.data.DataLoader(Testset, batch_size=16, shuffle=False, num_workers=1)
 
-    outputs_avg = outputs.view(bs, ncrops, -1).mean(1)  # avg over crops
-    _, predicted = torch.max(outputs_avg.data, 1)
+    # Debug: Print one batch
+    for batch in Testloader:
+        print(batch)
+        break
 
-    total += targets.size(0)
-    correct += predicted.eq(targets.data).cpu().sum()
-    if batch_idx == 0:
-        all_predicted = predicted
-        all_targets = targets
-    else:
-        all_predicted = torch.cat((all_predicted, predicted),0)
-        all_targets = torch.cat((all_targets, targets),0)
+    correct = 0
+    total = 0
+    all_target = []
+    for batch_idx, batch in enumerate(Testloader):
+        inputs, targets = batch[:2]  # Unpack the first two elements
+        bs, ncrops, c, h, w = np.shape(inputs)
+        inputs = inputs.view(-1, c, h, w)
+        inputs, targets = inputs.cuda(), targets.cuda()
+        inputs, targets = Variable(inputs, volatile=True), Variable(targets)
+        outputs = net(inputs)
 
-acc = 100. * correct / total
-print("accuracy: %0.3f" % acc)
+        outputs_avg = outputs.view(bs, ncrops, -1).mean(1)  # avg over crops
+        _, predicted = torch.max(outputs_avg.data, 1)
 
-# Compute confusion matrix
-matrix = confusion_matrix(all_targets.data.cpu().numpy(), all_predicted.cpu().numpy())
-np.set_printoptions(precision=2)
+        total += targets.size(0)
+        correct += predicted.eq(targets.data).cpu().sum()
+        if batch_idx == 0:
+            all_predicted = predicted
+            all_targets = targets
+        else:
+            all_predicted = torch.cat((all_predicted, predicted), 0)
+            all_targets = torch.cat((all_targets, targets), 0)
 
-# Plot normalized confusion matrix
-plt.figure(figsize=(10, 8))
-plot_confusion_matrix(matrix, classes=class_names, normalize=True,
-                      title= opt.split+' Confusion Matrix (Accuracy: %0.3f%%)' %acc)
-plt.savefig(os.path.join(path, opt.split + '_cm.png'))
-plt.close()
+    acc = 100. * correct / total
+    print("accuracy: %0.3f" % acc)
+
+    # Compute confusion matrix
+    matrix = confusion_matrix(all_targets.data.cpu().numpy(), all_predicted.cpu().numpy())
+    np.set_printoptions(precision=2)
+
+    # Plot normalized confusion matrix
+    plt.figure(figsize=(10, 8))
+    plot_confusion_matrix(matrix, classes=class_names, normalize=True,
+                          title=opt.split + ' Confusion Matrix (Accuracy: %0.3f%%)' % acc)
+    plt.savefig(os.path.join(path, opt.split + '_cm.png'))
+    plt.close()
+
+if __name__ == '__main__':
+    torch.multiprocessing.freeze_support()
+    main()
